@@ -1,0 +1,394 @@
+{% block content %}
+<div class="top-navbar">
+    <div class="nav-left">
+        <h2>D-Vote</h2>
+    </div>
+
+    <div class="nav-right">
+       
+        <a href="{% url 'dashboard' %}">Dashboard</a>
+        
+        <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
+    </div>
+</div>
+<div class="vote-container">
+
+    <!-- HEADER -->
+    <div class="vote-header">
+        <h1>Online Voting Portal</h1>
+        <p>Secure • Transparent • One Vote Per Voter</p>
+    </div>
+
+    <!-- SUCCESS MESSAGE -->
+    {% if message %}
+        <div class="status-box">
+            {{ message }}
+        </div>
+    {% endif %}
+
+    <!-- INSTRUCTIONS -->
+    {% if not vote_success %}
+    <div class="section-card">
+        <h3>Voting Instructions</h3>
+        <ul class="instructions">
+            <li>You are allowed to vote only once.</li>
+            <li>Select only one candidate carefully.</li>
+            <li>After submitting, your vote cannot be changed.</li>
+            <li>Your vote is securely recorded.</li>
+        </ul>
+
+        <div class="accept-box">
+            <label>
+                <input type="checkbox" id="acceptCheck">
+                I have read and agree to the voting instructions.
+            </label>
+        </div>
+    </div>
+
+    <div id="acceptedMsg" class="status-box" style="display:none;">
+        ✅ Instructions Accepted. You may proceed to vote.
+    </div>
+    {% endif %}
+
+    <!-- LOCATION -->
+    {% if not vote_success %}
+    <div class="section-card">
+        <h3>Select Your Constituency</h3>
+        <form method="GET">
+            <select name="location" onchange="this.form.submit()" class="location-select">
+                <option value="">-- Select Location --</option>
+                {% for loc in locations %}
+                    <option value="{{ loc }}" {% if selected_location == loc %}selected{% endif %}>
+                        {{ loc }}
+                    </option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
+    {% endif %}
+
+    <!-- CANDIDATES -->
+    {% if selected_location and not vote_success %}
+
+    <div class="section-card">
+        <h3>Candidates for {{ selected_location }}</h3>
+
+        <form method="post" id="voteForm">
+            {% csrf_token %}
+
+            <table class="candidate-table">
+                <thead>
+                    <tr>
+                        <th>Candidate Name</th>
+                        <th>Party Logo</th>
+                        <th>Select</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                {% for party, candidates in candidates_by_party.items %}
+                    {% for candidate in candidates %}
+                    <tr>
+                        <td class="candidate-name">
+                            {{ candidate.name }}
+                        </td>
+
+                        <td>
+                            {% if candidate.party_logo %}
+                                <img src="{{ candidate.party_logo.url }}"
+                                     class="party-logo"
+                                     alt="Logo">
+                            {% else %}
+                                No Logo
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            <input type="radio"
+                                   name="candidate"
+                                   value="{{ candidate.id }}"
+                                   required>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% endfor %}
+
+                </tbody>
+            </table>
+
+            <button type="submit"
+                    class="submit-btn"
+                    id="voteBtn"
+                    disabled>
+                Submit Vote
+            </button>
+        </form>
+
+    </div>
+
+    {% endif %}
+
+    <!-- AFTER SUCCESS BUTTONS -->
+    {% if vote_success %}
+
+    <div style="text-align:center; margin-top:30px;">
+
+        <a href="{% url 'download_receipt' %}">
+            <button class="download-btn">
+                📥 Download Receipt
+            </button>
+        </a>
+
+        <br><br>
+
+        <a href="{% url 'results' %}">
+            <button class="results-btn">
+                📊 View Live Results
+            </button>
+        </a>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+<style>
+
+body {
+  
+    background: radial-gradient(circle at top, #0a192f 0%, #000000 70%);
+
+    font-family: Arial, sans-serif;
+}
+
+.vote-container {
+    max-width: 750px;
+    margin: 40px auto;
+}
+
+.vote-header {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #00f2ff;
+}
+
+.section-card {
+    background: rgba(15, 23, 42, 0.95);
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 12px;
+    border: 1px solid #2e3b55;
+    color: white;
+}
+
+.instructions {
+    padding-left: 20px;
+}
+
+.accept-box {
+    margin-top: 15px;
+}
+
+.status-box {
+    padding: 15px;
+    border-radius: 8px;
+    background: rgba(34,197,94,0.15);
+    border: 1px solid #22c55e;
+    color: #4ade80;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.location-select {
+    padding: 8px;
+    width: 100%;
+    border-radius: 6px;
+    border: none;
+    margin-top: 10px;
+}
+
+.candidate-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.candidate-table th {
+    background: #00f2ff;
+    color: #0f172a;
+    padding: 10px;
+    text-align: center;
+}
+
+.candidate-table td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    color:aliceblue
+}
+
+.candidate-table tr:hover {
+    background: rgba(0,242,255,0.15);
+}
+
+.party-logo {
+    width: 75px;
+    height: 75px;
+    object-fit: contain;
+}
+
+.submit-btn {
+    margin-top: 20px;
+    padding: 10px 25px;
+    background: #29e939;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.submit-btn:disabled {
+    background: gray;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.download-btn {
+    padding: 10px 25px;
+    background: #22c55e;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.results-btn {
+    padding: 10px 25px;
+    background: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.locked-box {
+    background: #ffe6e6;
+    padding: 15px;
+    border-radius: 6px;
+    color: red;
+    text-align: center;
+    font-weight: bold;
+}
+.top-navbar {
+    width: 100%;
+    background: #07142c;
+    padding: 15px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.nav-left h2 {
+    color: #00f2ff;
+    margin: 0;
+}
+
+.nav-right a {
+    color: white;
+    text-decoration: none;
+    margin-left: 25px;
+    font-weight: 500;
+    font-size: 18px;
+    transition: 0.3s;
+}
+
+.nav-right a:hover {
+    color: #00f2ff;
+}
+
+.logout-btn {
+    color: #ff4d4d;
+}
+
+.logout-btn:hover {
+    color: #ff1a1a;
+}
+h1{
+     color: #00f2ff;
+}
+</style>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    const checkbox = document.getElementById("acceptCheck");
+    const voteBtn = document.getElementById("voteBtn");
+    const acceptedMsg = document.getElementById("acceptedMsg");
+
+    if (checkbox && voteBtn) {
+        voteBtn.disabled = true;
+
+        checkbox.addEventListener("change", function () {
+            voteBtn.disabled = !this.checked;
+            acceptedMsg.style.display = this.checked ? "block" : "none";
+        });
+    }
+
+});
+
+document.getElementById("voteForm")?.addEventListener("submit", function(e){
+    if(!confirm("Are you sure you want to cast your vote?")){
+        e.preventDefault();
+    }
+});
+
+</script>
+<script>
+{% if vote_success %}
+document.addEventListener("DOMContentLoaded", function () {
+
+    // Play voice only first time after voting
+    if (!sessionStorage.getItem("voicePlayed")) {
+
+        const message = new SpeechSynthesisUtterance(
+           "Your vote has been recorded successfully. Thank you."
+        );
+
+        message.lang = "en-IN";
+
+        function setFemaleVoice() {
+            const voices = speechSynthesis.getVoices();
+
+            for (let i = 0; i < voices.length; i++) {
+                if (
+                    voices[i].name.toLowerCase().includes("female") ||
+                    voices[i].name.toLowerCase().includes("zira") ||
+                    voices[i].name.toLowerCase().includes("google")
+                ) {
+                    message.voice = voices[i];
+                    break;
+                }
+            }
+
+            speechSynthesis.speak(message);
+            sessionStorage.setItem("voicePlayed", "true");
+        }
+
+        if (speechSynthesis.getVoices().length > 0) {
+            setFemaleVoice();
+        } else {
+            speechSynthesis.onvoiceschanged = setFemaleVoice;
+        }
+    }
+
+});
+{% endif %}
+</script>
+
+{% endblock %}

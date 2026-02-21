@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Results - {{ selected_location }}</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #020001;
+            color: #f1f5f9;
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px 20px 10px;
+        }
+
+        .header h2 {
+            font-size: 36px;
+            color: #38bdf8;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.05);
+            padding: 25px;
+            width: 200px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            font-size: 28px;
+            color: #22d3ee;
+        }
+
+        .chart-container {
+            width: 75%;
+            max-width: 950px;
+            height: 400px;
+            margin: 40px auto;
+            padding: 30px;
+            border-radius: 18px;
+            background: rgba(255,255,255,0.05);
+        }
+
+        .percentage-list {
+            width: 75%;
+            max-width: 950px;
+            margin: auto;
+            margin-top: 20px;
+        }
+
+        .percent-row {
+            margin-bottom: 20px;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .winner {
+            border: 2px solid #4ade80;
+        }
+
+        .percent-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .progress-bar {
+            height: 12px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #22d3ee;
+            transition: width 1s ease-in-out;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #94a3b8;
+        }
+        .top-navbar {
+    width: 100%;
+    background: #0f172a;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 40px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.nav-left h2 {
+    color: #38bdf8;
+    margin: 0;
+    font-size: 22px;
+}
+
+.nav-right a {
+    text-decoration: none;
+    margin-left: 25px;
+    font-weight: 600;
+    color: #e2e8f0;
+    transition: 0.3s;
+}
+
+.nav-right a:hover {
+    color: #22d3ee;
+}
+
+.logout-btn {
+   
+    padding: 8px 15px;
+    border-radius: 8px;
+    color: white !important;
+}
+
+
+    </style>
+</head>
+
+<body>
+<div class="top-navbar">
+    <div class="nav-left">
+        <h2>D-Vote</h2>
+    </div>
+
+    <div class="nav-right">
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'logout' %}" class="logout-btn">Logout</a>
+    </div>
+</div>
+
+<div class="header">
+    <h2>Live Results - {{ selected_location }}</h2>
+</div>
+
+<div class="stats">
+    <div class="stat-card">
+        <h3>{{ total_votes }}</h3>
+        <p>Total Votes</p>
+    </div>
+
+    <div class="stat-card">
+        <h3>{{ percentage_data|length }}</h3>
+        <p>Total Candidates</p>
+    </div>
+</div>
+
+<!-- BAR GRAPH -->
+<div class="chart-container">
+    <canvas id="resultsChart"></canvas>
+</div>
+
+<!-- PERCENTAGE + LOGO -->
+<div class="percentage-list">
+    {% for c in percentage_data %}
+    <div class="percent-row {% if c.is_winner %}Leading{% endif %}">
+        <div class="percent-label">
+
+            <div style="display:flex; align-items:center; gap:10px;">
+                {% if c.logo %}
+                    <img src="{{ c.logo }}" width="40" height="40"
+                         style="border-radius:50%; object-fit:cover;">
+                {% endif %}
+
+                <div>
+                    <strong>{{ c.name }}</strong><br>
+                    <small>{{ c.party }}</small>
+                </div>
+
+                {% if c.is_winner %}
+                    <span style="color:#4ade80;">leading</span>
+                {% endif %}
+            </div>
+
+            <div>{{ c.percent }}%</div>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" style="width: {{ c.percent }}%"></div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<script>
+    const ctx = document.getElementById('resultsChart').getContext('2d');
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: {{ chart_names|safe }},
+            datasets: [{
+                label: 'Votes',
+                data: {{ chart_votes|safe }},
+                backgroundColor: 'rgba(34, 211, 238, 0.6)',
+                borderColor: 'rgba(34, 211, 238, 1)',
+                borderWidth: 2,
+                borderRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+
+    // Auto refresh every 5 seconds
+    setInterval(() => {
+        window.location.reload();
+    }, 5000);
+</script>
+<!-- ================= DEMOGRAPHIC ANALYTICS ================= -->
+
+
+<div class="footer">
+    © 2026 D-Vote | Real-Time Secure Voting System
+</div>
+
+</body>
+</html>

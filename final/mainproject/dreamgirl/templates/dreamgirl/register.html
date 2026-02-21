@@ -1,0 +1,130 @@
+{% extends 'dreamgirl/base.html' %}
+{% block content %}
+
+<section style="display:flex; justify-content:center; align-items:flex-start; gap:60px; padding:60px 8%; flex-wrap:wrap;">
+
+    <!-- LEFT SIDE - INFORMATION -->
+    <div style="flex:1; min-width:300px; max-width:500px;">
+
+        <h2 style="margin-bottom:20px;">Secure Voter Registration</h2>
+
+        <p style="color:#cbd5e1; line-height:1.7; margin-bottom:25px;">
+            Join the Karnataka Assembly Mock Election 2026 and become a verified digital voter.
+        </p>
+        <div style="margin-bottom:25px;">
+            <h4>Why Register?</h4>
+            <ul style="color:#94a3b8; line-height:1.8; margin-top:10px;">
+                <li>✔ Unique voter verification</li>
+                <li>✔ Secure encrypted vote storage</li>
+                <li>✔ Prevent duplicate voting</li>
+                <li>✔ Real-time transparent results</li>
+            </ul>
+        </div>
+
+        <div style="margin-bottom:25px;">
+            <h4>Security Assurance</h4>
+            <p style="color:#94a3b8; line-height:1.7;">
+                Your credentials are securely stored. Each voter is mapped to a unique ID.
+                Votes are anonymous and cannot be altered after submission.
+            </p>
+        </div>
+
+        <div style="padding:15px; background:rgba(15,23,42,0.8); border-radius:12px;">
+            <strong>Academic Disclaimer:</strong>
+            <p style="font-size:14px; color:#94a3b8; margin-top:8px;">
+                This platform is developed strictly for academic and demonstration purposes.
+                It does not represent or conduct any official government election.
+            </p>
+        </div>
+
+    </div>
+
+    <!-- RIGHT SIDE - FORM -->
+    <div style="flex:1; min-width:320px; max-width:450px;">
+
+        <h2 style="text-align:center; margin-bottom:20px;">Create Your Voter Account</h2>
+
+        {% if message %}
+        <div style="color:red; text-align:center; margin-bottom:15px;">
+            {{ message }}
+        </div>
+        {% endif %}
+
+        <form method="post" action="{% url 'register' %}">
+            {% csrf_token %}
+
+            <label>Full Name</label>
+            <input type="text" name="name" required>
+
+            <label>Email Address</label>
+            <input type="email" name="email" required>
+
+            <label>Aadhaar Number</label>
+            <input type="text" name="aadhaar" required pattern="\d{12}" title="Enter 12-digit Aadhaar number">
+
+            <label>Voter ID</label>
+            <input type="text" name="voter_id"
+                   pattern="[A-Z]{3}[0-9]{7}"
+                   title="3 uppercase letters followed by 7 digits"
+                   required>
+
+            <label>Age</label>
+            <input type="number" name="age" min="18" required>
+          
+            <label> Gender</label>
+
+<div style="
+    width:100%;
+    background:#1e293b;
+    padding:10px 12px;
+    border-radius:8px;
+    display:flex;
+    gap:40px;
+    align-items:center;
+    margin-bottom:10px;
+">
+
+    <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+        <input type="radio" name="gender" value="male">
+        <span>Male</span>
+    </label>
+
+    <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+        <input type="radio" name="gender" value="female">
+        <span>Female</span>
+    </label>
+
+</div>
+
+
+            <label>Password</label>
+            <input type="password" name="password" required
+                   pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}"
+                   title="Minimum 8 characters including uppercase, lowercase, number & special character">
+
+            <label>Confirm Password</label>
+            <input type="password" name="confirm_password" required>
+
+            <label>Location</label>
+            <select name="location" required>
+                <option value="">Select your location</option>
+                <option value="doranahalli">Doranahalli</option>
+                <option value="shahapur">Shahapur</option>
+                <option value="jayanagar">Jayanagar</option>
+                <option value="vasantapura">Vasantapura</option>
+                <option value="hosur">Hosur</option>
+            </select>
+
+            <button type="submit">Register Now</button>
+        </form>
+
+        <div style="text-align:center; margin-top:18px;">
+            <span style="color:#94a3b8;">Already registered?</span>
+            <a href="{% url 'login' %}">Login here</a>
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

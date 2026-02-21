@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Final Election Result</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body {
+    margin:0;
+    font-family:'Segoe UI';
+    background-color:#020001;
+    color:white;
+}
+.ec-title {
+    text-align:center;
+    font-size:24px;
+    padding:20px 0;
+    color:#00f2ff;
+    font-weight:600;
+}
+.declaration {
+    text-align:left;
+    padding-left:30px;
+    margin-top:20px;
+    color:#00f2ff;
+}
+.marquee {
+    width:100%;
+    overflow:hidden;
+    white-space:nowrap;
+    background:#4ade80;
+    color:#0f172a;
+    font-size:24px;
+    font-weight:bold;
+    padding:12px 0;
+}
+.marquee span {
+    display:inline-block;
+    padding-left:100%;
+    animation: scroll 10s linear infinite;
+}
+@keyframes scroll {
+    0% { transform:translateX(0); }
+    100% { transform:translateX(-100%); }
+}
+.official-winner {
+    text-align:center;
+    font-size:40px;
+    margin-top:25px;
+    color:#00f2ff;
+}
+.header {
+    text-align:center;
+    padding:40px 20px;
+}
+.winner-logo {
+    width:160px;
+    border-radius:50%;
+    box-shadow:0 0 30px #4ade80;
+    margin:20px 0;
+}
+.table-container {
+    width:85%;
+    margin:50px auto;
+    background:rgba(255,255,255,0.05);
+    padding:25px;
+    border-radius:15px;
+}
+table {
+    width:100%;
+    border-collapse:collapse;
+}
+th, td {
+    padding:15px;
+    text-align:center;
+}
+th {
+    background:#1e293b;
+    color:#00f2ff;
+}
+tr:nth-child(even) {
+    background:rgba(255,255,255,0.04);
+}
+.logo {
+    width:60px;
+    border-radius:50%;
+}
+.chart-wrapper {
+    display:flex;
+    justify-content:center;
+    width:85%;
+    margin:60px auto;
+}
+.chart-left {
+    width:400px;
+    height:400px;
+}
+.analytics-wrapper {
+    display: flex;
+    flex-direction: column;   /* 🔥 makes them one below another */
+    gap: 40px;
+    align-items: center;
+}
+.analytics-card {
+    background:rgba(255,255,255,0.05);
+    padding:20px;
+    border-radius:15px;
+    width:500px;
+    text-align:center;
+}
+.turnout-percent {
+    font-size:28px;
+    font-weight:bold;
+    color:#22c55e;
+    margin-top:15px;
+}
+.tie-container {
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+    margin-top: 50px;
+    flex-wrap: wrap;
+}
+
+.tie-box {
+    width: 300px;
+    background: #111;
+    
+    border-radius: 15px;
+    padding: 30px;
+    text-align: center;
+    
+   
+}
+
+
+
+.tie-box-logo {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    margin-bottom: 20px;
+}
+
+.tie-box-name {
+    font-size: 22px;
+    margin-bottom: 8px;
+}
+
+.tie-box-party {
+    color: #00f2ff;
+    margin-bottom: 10px;
+}
+
+.tie-box-votes {
+    color: orange;
+    font-weight: bold;
+}
+.chart-box {
+    width: 500px;
+    margin: 60px auto;
+    background: rgba(255,255,255,0.05);
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+   
+}
+
+.chart-heading {
+    margin-bottom: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="declaration">
+    Result Declared On: 13 February 2026 | 6:00 PM
+</div>
+
+<div class="ec-title">
+    Election Commission 2026 - D-Vote
+</div>
+
+<!-- ================= RESULT SECTION ================= -->
+
+{% if is_tie %}
+
+<div class="official-winner" style="color:orange;">
+    ⚖ OFFICIAL RESULT: TIE ⚖
+</div>
+
+<h3 style="text-align:center; margin-top:20px;">
+    Highest Voted Candidates
+</h3>
+
+
+<div class="tie-container">
+
+    {% for c in top_candidates %}
+    <div class="tie-box">
+
+        {% if c.party_logo %}
+            <img src="{{ c.party_logo.url }}" class="tie-box-logo">
+        {% endif %}
+
+        <h2 class="tie-box-name">{{ c.name }}</h2>
+        <h3 class="tie-box-party">{{ c.party }}</h3>
+        <h3 class="tie-box-votes">Votes: {{ c.votes }}</h3>
+
+    </div>
+    {% endfor %}
+
+</div>
+<div style="
+    width:70%;
+    margin:30px auto;
+    padding:20px;
+    background:rgba(255,165,0,0.15);
+    border:2px solid orange;
+    border-radius:12px;
+    text-align:center;
+    font-size:18px;">
+    ⚖ There is a tie between the highest voted candidates.
+    As per election procedure, recount or re-election is required.
+</div>
+
+{% else %}
+
+<div class="marquee">
+    <span>🎉 CONGRATULATIONS {{ winner.name }} ON YOUR GRAND VICTORY 🎉</span>
+</div>
+
+<div class="official-winner">
+    🏆 OFFICIAL WINNER 🏆
+</div>
+
+<div class="header">
+    {% if winner.party_logo %}
+        <img src="{{ winner.party_logo.url }}" class="winner-logo">
+    {% endif %}
+    <h2>{{ winner.name }} ({{ winner.party }})</h2>
+    <h3>Winner of {{ selected_location }}</h3>
+    <h2 style="color:#4ade80;">Total Votes: {{ winner.votes }}</h2>
+</div>
+
+{% endif %}
+
+<!-- ================= ALL CANDIDATES TABLE ================= -->
+
+<div class="table-container">
+    <h2 style="text-align:center;">All Candidates</h2>
+    <table>
+        <tr>
+            <th>Logo</th>
+            <th>Name</th>
+            <th>Party</th>
+            <th>Votes</th>
+            <th>%</th>
+        </tr>
+        {% for c in all_candidates %}
+        <tr>
+            <td>{% if c.logo %}<img src="{{ c.logo }}" class="logo">{% endif %}</td>
+            <td>{{ c.name }}</td>
+            <td>{{ c.party }}</td>
+            <td>{{ c.votes }}</td>
+            <td>{{ c.percent }}%</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+<!-- ================= PIE CHART ================= -->
+<div class="chart-box">
+
+    <h2 class="chart-heading">Vote Share Distribution</h2>
+
+    <canvas id="voteShareChart"></canvas>
+
+</div>
+
+<!-- ================= ANALYTICS ================= -->
+
+<div class="analytics-wrapper">
+
+    <div class="analytics-card">
+        <h3>Gender Distribution</h3>
+        <p>Male: {{ male_count }}</p>
+        <p>Female: {{ female_count }}</p>
+        <canvas id="genderChart"></canvas>
+    </div>
+
+    <div class="analytics-card">
+        <h3>Age Group Analysis</h3>
+        <p>18-25: {{ age_18_25 }}</p>
+        <p>26-40: {{ age_26_40 }}</p>
+        <p>40+: {{ age_40_plus }}</p>
+        <canvas id="ageChart"></canvas>
+    </div>
+
+    <div class="analytics-card">
+        <h3>Voter Turnout</h3>
+
+        <div class="turnout-percent">
+            {{ turnout_percentage }}%
+        </div>
+
+        Registered: {{ total_registered }} <br>
+        Votes Cast: {{ total_votes }}
+
+        <div style="width:100%;height:15px;background:rgba(255,255,255,0.1);
+        border-radius:8px;overflow:hidden;margin-top:15px;">
+            <div style="height:100%;background:#22c55e;
+            width: {{ turnout_percentage }}%;"></div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+
+// Vote Share Chart
+new Chart(document.getElementById('voteShareChart'), {
+    type: 'pie',
+    data: {
+        labels: [{% for c in all_candidates %}"{{ c.name }}",{% endfor %}],
+        datasets: [{
+            data: [{% for c in all_candidates %}{{ c.votes }},{% endfor %}],
+            backgroundColor: [
+                '#22c55e','#3b82f6','#ef4444',
+                '#f59e0b','#a855f7','#06b6d4'
+            ]
+        }]
+    },
+    options: {
+        plugins: { legend: { labels: { color: 'white' } } }
+    }
+});
+
+// Gender Chart
+new Chart(document.getElementById('genderChart'), {
+    type: 'pie',
+    data: {
+        labels: ['Male','Female'],
+        datasets: [{
+            data: [{{ male_count }}, {{ female_count }}],
+            backgroundColor: ['#3b82f6','#ec4899']
+        }]
+    },
+    options: {
+        plugins: { legend: { labels: { color: 'white' } } }
+    }
+});
+
+// Age Chart
+new Chart(document.getElementById('ageChart'), {
+    type: 'bar',
+    data: {
+        
+        labels: ['18-25','26-40','40+'],
+        datasets: [
+{
+    label: '18-25',
+    data: [{{ age_18_25 }}, 0, 0],
+    backgroundColor: '#22c55e'
+},
+{
+    label: '26-40',
+    data: [0, {{ age_26_40 }}, 0],
+    backgroundColor: '#f59e0b'
+},
+{
+    label: '40+',
+    data: [0, 0, {{ age_40_plus }}],
+    backgroundColor: '#ef4444'
+}
+]
+    },
+    options: {
+        plugins: { legend: { labels: { color: 'white' } } },
+        scales: {
+            x: { ticks: { color: 'white' } },
+            y: { beginAtZero:true, ticks: { color: 'white' } }
+        }
+    }
+});
+
+</script>
+
+</body>
+</html>

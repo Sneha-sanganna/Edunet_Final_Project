@@ -1,0 +1,262 @@
+/* ================= GLOBAL ================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #070b14;
+    color: white;
+    min-height: 100vh;
+}
+
+/* ================= NAVBAR ================= */
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 8%;
+    background: #0b1120;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: bold;
+    color: #00f2ff;
+}
+
+.nav-links a {
+    margin-left: 25px;
+    text-decoration: none;
+    color: white;
+    transition: 0.3s;
+    font-weight: 500;
+}
+
+.nav-links a:hover {
+    color: #00f2ff;
+}
+
+/* ================= HERO ================= */
+
+.hero {
+    min-height: 85vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px;
+}
+
+.hero h1 {
+    font-size: 55px;
+    font-weight: 700;
+}
+
+.highlight {
+    color: #00f2ff;
+}
+
+.hero p {
+    margin-top: 20px;
+    font-size: 18px;
+    color: #cbd5e1;
+}
+
+.hero-buttons {
+    margin-top: 30px;
+}
+
+.btn-primary {
+    background: #00f2ff;
+    color: black;
+    padding: 12px 28px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 600;
+    margin-right: 15px;
+    transition: 0.3s;
+}
+
+.btn-primary:hover {
+    transform: scale(1.05);
+}
+
+.btn-secondary {
+    border: 1px solid #00f2ff;
+    padding: 12px 28px;
+    border-radius: 30px;
+    text-decoration: none;
+    color: #00f2ff;
+}
+
+.stats {
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+    margin-top: 60px;
+    flex-wrap: wrap;
+}
+
+.stats h2 {
+    color: #00f2ff;
+}
+
+/* ================= FORMS ================= */
+
+form {
+    max-width: 450px;
+    margin: 30px auto;
+    padding: 30px;
+    background: rgba(15, 23, 42, 0.9);
+    border-radius: 15px;
+    box-shadow: 0 0 25px rgba(0, 242, 255, 0.1);
+}
+
+form label {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+form input,
+form select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    margin-bottom: 10px;
+    background: #1e293b;
+    color: rgb(255, 255, 255);
+}
+
+form input:focus,
+form select:focus {
+    border: 1px solid #00f2ff;
+}
+
+form button {
+    width: 100%;
+    margin-top: 15px;
+    padding: 12px;
+    border: none;
+    border-radius: 25px;
+    background: #00f2ff;
+    color: black;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+form button:hover {
+    transform: scale(1.03);
+}
+
+/* ================= DASHBOARD ================= */
+
+.dashboard-container {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 50px;
+    flex-wrap: wrap;
+    
+    
+}
+
+
+.dashboard-box {
+   
+   
+    padding: 40px;
+    border-radius: 15px;
+    width: 220px;
+    text-align: center;
+    box-shadow: 0 0 20px rgba(0, 242, 255, 0.1);
+    transition: 0.3s;
+}
+
+.dashboard-box:hover {
+    transform: translateY(-5px);
+}
+
+.dashboard-box a {
+    text-decoration: none;
+    color: #00f2ff;
+    font-weight: 600;
+}
+
+/* ================= VOTE PAGE ================= */
+
+select {
+    padding: 8px;
+    border-radius: 6px;
+}
+
+.candidate-box {
+    background: rgba(15, 23, 42, 0.9);
+    margin: 10px auto;
+    padding: 12px;
+    width: 60%;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: 0.3s;
+}
+
+.candidate-box:hover {
+    background: #1e293b;
+}
+
+.candidate-box input[type="radio"] {
+    accent-color: #00f2ff;
+}
+
+/* ================= HEADINGS ================= */
+
+h2 {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 28px;
+}
+
+h3, h4 {
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* ================= LINKS ================= */
+
+a {
+    color: #00f2ff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 768px) {
+    .hero h1 {
+        font-size: 36px;
+    }
+
+    .candidate-box {
+        width: 90%;
+    }
+}
+
+
+

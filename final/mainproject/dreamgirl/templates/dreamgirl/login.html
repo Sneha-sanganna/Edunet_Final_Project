@@ -1,0 +1,53 @@
+{% extends 'dreamgirl/base.html' %}
+{% load static %}
+
+{% block content %}
+<h2>Voter Login</h2>
+
+<!-- Display error messages in center -->
+{% if messages %}
+    <div style="
+        color: rgb(185, 36, 16);
+        text-align: center; 
+        margin-bottom: 20px;
+        font-weight: bold;
+        font-size: 1.1rem;
+    ">
+        {% for message in messages %}
+            {{ message }}<br>
+        {% endfor %}
+    </div>
+{% endif %}
+<form method="post" action="{% url 'login' %}">
+    {% csrf_token %}
+
+    <label for="voter_id">Voter ID</label>
+    <input type="text" id="voter_id" name="voter_id" required>
+
+    <label for="password">Password</label>
+    <div style="position: relative;">
+        <input type="password" id="password" name="password" required style="padding-right:45px;">
+        <span onclick="togglePassword()" style="position:absolute; right:15px; top:50%; transform:translateY(-50%); cursor:pointer; color:#00ffd5;">👁</span>
+    </div>
+
+    <button type="submit">Login</button>
+</form>
+
+<div style="margin-top:20px; text-align:center;">
+    <span>New voter? </span><a href="{% url 'register' %}">Register here</a>
+</div>
+<div style="margin-top:12px; text-align:center;">
+    <a href="{% url 'forgot_password' %}"
+       style="font-size:0.9rem; color:#0066cc; text-decoration:none;">
+        Forgot password?
+    </a>
+</div>
+
+
+<script>
+function togglePassword() {
+    const passField = document.getElementById('password');
+    passField.type = passField.type === 'password' ? 'text' : 'password';
+}
+</script>
+{% endblock %}
